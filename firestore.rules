@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // استبدل هذه العناوين بالبريد الإلكتروني الفعلي لأفراد العائلة الثلاثة.
+    // لا تترك عناوين المثال بعد الإعداد.
+    function isFamilyMember() {
+      return request.auth != null
+        && request.auth.token.email in [
+          "father@example.com",
+          "mother@example.com",
+          "brother@example.com"
+        ];
+    }
+
+    match /products/{productId} {
+      allow read: if isFamilyMember();
+      allow create: if isFamilyMember()
+        && request.resource.data.keys().hasAll([
+          'name', 'nameLower', 'category', 'unit', 'price', 'notes', 'createdAt', 'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.price is number
+        && request.resource.data.price >= 0
+        && request.resource.data.category is string
+        && request.resource.data.unit is string;
+      allow update: if isFamilyMember()
+        && request.resource.data.keys().hasAll([
+          'name', 'nameLower', 'category', 'unit', 'price', 'notes', 'createdAt', 'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.price is number
+        && request.resource.data.price >= 0
+        && request.resource.data.category is string
+        && request.resource.data.unit is string;
+      allow delete: if isFamilyMember();
+    }
+  }
+}

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#145a46">
+  <meta name="description" content="قائمة أسعار مشتركة لأفراد العائلة لإدارة منتجات الدكان">
+  <title>أسعار دكان العائلة</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="الصفحة الرئيسية">
+        <span class="brand-mark" aria-hidden="true">🛒</span>
+        <span class="brand-copy"><strong>دكان العائلة</strong><small>قائمة أسعار مشتركة</small></span>
+      </a>
+      <div class="topbar-actions">
+        <span id="connectionBadge" class="status-badge status-offline"><span class="status-dot"></span> غير متصل</span>
+        <button id="logoutBtn" class="button button-quiet hidden" type="button">تسجيل الخروج</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="welcome-row">
+        <div>
+          <p class="eyebrow">إدارة أسعار المنتجات</p>
+          <h1>كل الأسعار بمكان واحد</h1>
+          <p class="welcome-copy">أضف المنتجات وعدّل أسعارها من أي هاتف. ستظهر التغييرات لبقية أفراد العائلة عند اتصالهم بالإنترنت.</p>
+        </div>
+        <div class="welcome-icon" aria-hidden="true">🧺</div>
+      </section>
+
+      <div id="setupNotice" class="notice notice-warning hidden" role="alert">
+        <strong>بقي ربط Firebase</strong>
+        <p>افتح ملف <code>firebase-config.js</code> وأدخل إعدادات مشروع Firebase الخاص بك، ثم ارفع الملفات من جديد. اتبع ملف التعليمات المرفق.</p>
+      </div>
+
+      <div id="globalNotice" class="notice hidden" role="status"></div>
+
+      <section id="loginPanel" class="login-card">
+        <div class="section-heading">
+          <div class="section-icon">🔐</div>
+          <div><h2>تسجيل دخول العائلة</h2><p>استخدم البريد وكلمة المرور اللذين تم إعدادُهما لك.</p></div>
+        </div>
+        <form id="loginForm" class="stack-form">
+          <label for="emailInput">البريد الإلكتروني</label>
+          <input id="emailInput" type="email" autocomplete="username" placeholder="name@example.com" required>
+          <label for="passwordInput">كلمة المرور</label>
+          <input id="passwordInput" type="password" autocomplete="current-password" placeholder="أدخل كلمة المرور" required>
+          <button id="loginBtn" class="button button-primary button-wide" type="submit">دخول إلى قائمة الأسعار</button>
+          <p class="form-hint">لا يوجد تسجيل عام. يمكن للمسؤول إنشاء حسابات أفراد العائلة فقط من لوحة Firebase.</p>
+        </form>
+      </section>
+
+      <section id="appPanel" class="hidden" aria-live="polite">
+        <div class="signed-in-row">
+          <div><span class="subtle-label">مرحبًا</span><strong id="signedInEmail">—</strong></div>
+          <span class="sync-label"><span class="sync-pulse"></span> مزامنة مباشرة</span>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><span class="stat-icon stat-icon-green">📦</span><div><span class="stat-label">المنتجات</span><strong id="totalProducts">0</strong></div></article>
+          <article class="stat-card"><span class="stat-icon stat-icon-blue">🏷️</span><div><span class="stat-label">التصنيفات</span><strong id="totalCategories">0</strong></div></article>
+          <article class="stat-card"><span class="stat-icon stat-icon-gold">🕒</span><div><span class="stat-label">آخر تحديث</span><strong id="lastUpdated">—</strong></div></article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel product-form-panel">
+            <div class="panel-heading"><div><p class="eyebrow">إدارة المخزون السعري</p><h2 id="formTitle">إضافة منتج جديد</h2></div><span class="panel-heading-icon">＋</span></div>
+            <form id="productForm" class="stack-form">
+              <label for="productName">اسم المنتج <span class="required">*</span></label>
+              <input id="productName" type="text" maxlength="100" placeholder="مثال: زيت نباتي" required>
+
+              <label for="productPrice">السعر <span class="required">*</span></label>
+              <div class="price-input-wrap"><input id="productPrice" type="number" min="0" step="any" inputmode="decimal" placeholder="0" required><span id="currencyLabel" class="currency-label">ل.س</span></div>
+
+              <div class="form-two-columns">
+                <div><label for="productUnit">وحدة البيع</label><select id="productUnit"><option>قطعة</option><option>عبوة</option><option>كغ</option><option>غرام</option><option>لتر</option><option>كرتون</option><option>كيس</option><option>صندوق</option><option>ربطة</option><option>متر</option></select></div>
+                <div><label for="productCategory">التصنيف</label><input id="productCategory" type="text" maxlength="60" list="categorySuggestions" placeholder="مواد غذائية"><datalist id="categorySuggestions"><option value="مواد غذائية"><option value="مشروبات"><option value="منظفات"><option value="عناية شخصية"><option value="معلبات"><option value="أخرى"></datalist></div>
+              </div>
+              <label for="productNotes">ملاحظات (اختياري)</label>
+              <input id="productNotes" type="text" maxlength="180" placeholder="النوع أو الحجم أو ملاحظة مفيدة">
+              <div class="form-actions"><button id="saveProductBtn" class="button button-primary button-wide" type="submit">حفظ المنتج</button><button id="cancelEditBtn" class="button button-secondary button-wide hidden" type="button">إلغاء التعديل</button></div>
+              <p class="form-hint">سيظهر السعر الجديد لدى بقية أفراد العائلة بعد حفظه واتصال أجهزتهم بالإنترنت.</p>
+            </form>
+          </section>
+
+          <section class="panel products-panel">
+            <div class="panel-heading products-heading"><div><p class="eyebrow">قائمة الدكان</p><h2>المنتجات والأسعار</h2></div><span id="visibleCount" class="count-pill">0 منتج</span></div>
+            <div class="filters-row"><div class="search-wrap"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن منتج..." aria-label="ابحث عن منتج"></div><select id="categoryFilter" aria-label="تصفية حسب التصنيف"><option value="">كل التصنيفات</option></select></div>
+            <div id="loadingProducts" class="loading-state"><span class="spinner"></span><span>جارٍ تحميل المنتجات...</span></div>
+            <div id="emptyProducts" class="empty-state hidden"><span class="empty-icon">🛍️</span><strong>لا توجد منتجات بعد</strong><p>أضف أول منتج من النموذج الموجود بجانبك.</p></div>
+            <div id="productsList" class="products-list"></div>
+            <p class="list-footnote">الأسعار المعروضة هي أسعار البيع المسجلة. تأكد من تحديثها عند تغييرها في المحل.</p>
+          </section>
+        </div>
+      </section>
+
+      <footer class="footer"><span>قائمة أسعار العائلة</span><span>بياناتك متاحة للحسابات المصرح لها فقط</span></footer>
+    </main>
+  </div>
+  <script>
+    // اسم العملة التي ستظهر بجانب الأسعار. غيّره إذا كانت عملة الدكان مختلفة.
+    window.SHOP_CURRENCY = 'ل.س';
+  </script>
+</body>
+</html>
