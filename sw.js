@@ -1,4 +1,4 @@
-const CACHE_NAME = 'family-shop-prices-pwa-v1';
+const CACHE_NAME = 'family-shop-prices-pwa-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -6,9 +6,9 @@ const APP_SHELL = [
   './app.js',
   './firebase-config.js',
   './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-512-maskable.png'
+ './icon-192.png',
+'./icon-512.png',
+'./icon-512-maskable.png'
 ];
 
 self.addEventListener('install', (event) => {
